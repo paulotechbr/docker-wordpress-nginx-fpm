@@ -2,25 +2,25 @@ version: '3'
 
 services:
   php73:
-    image: wordpress:php7.3-fpm
+    image: prestashop/prestashop:1.7-7.2-fpm 
     restart: always
     networks:
-      - internal
+      - intranet
     volumes:
-      - $PWD/html:/var/www/html:rw
+      - $PWD/html:/var/www/html
   nginx:
     image: nginx 
     restart: always
     networks:
-      - internal
+      - intranet
       - web
     volumes:
       - $PWD/default.conf:/etc/nginx/conf.d/default.conf
-      - $PWD/html:/var/www/html:rw
+      - $PWD/html:/var/www/html
     labels:
       - "traefik.enable=true"
-      - "traefik.backend=paulotech"
-      - "traefik.frontend.rule=Host:seusite.com.br"
+      - "traefik.backend=loja-paulotech"
+      - "traefik.frontend.rule=Host:loja.paulotech.com.br"
       - "traefik.port=80"
       - "traefik.docker.network=web"
 
@@ -28,15 +28,15 @@ services:
     image: mariadb
     restart: always
     networks:
-      - internal
+      - intranet
     environment:
-      MYSQL_ROOT_PASSWORD: "wordpress"
-      MYSQL_DATABASE: "wordpress"
+      MYSQL_ROOT_PASSWORD: "prestashop"
+      MYSQL_DATABASE: "prestashop"
     volumes:
-      - $PWD/datadir:/var/lib/mysql:rw
+      - $PWD/datadir:/var/lib/mysql
 
 networks:
+  intranet:
   web:
     external: true
-  internal:
-    external: false
+
